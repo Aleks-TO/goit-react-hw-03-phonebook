@@ -5,6 +5,8 @@ import ContactForm from './contactForm/contactForm';
 import ContactList from './contactList/contactList';
 import Filter from './filter/filter';
 
+const SAVED_CONTACT_KEY = 'contactsList';
+
 class App extends Component {
   state = {
     contacts: [],
@@ -32,6 +34,22 @@ class App extends Component {
     });
     event.currentTarget.reset();
   };
+
+  componentDidMount() {
+    const savedContacts = localStorage.getItem(SAVED_CONTACT_KEY);
+    if (savedContacts) {
+      this.setState({ contacts: JSON.parse(savedContacts) });
+    }
+  }
+
+  componentDidUpdate(_, prevState) {
+    if (prevState.contacts.length !== this.state.contacts.length) {
+      localStorage.setItem(
+        SAVED_CONTACT_KEY,
+        JSON.stringify(this.state.contacts)
+      );
+    }
+  }
 
   deleteContact = event => {
     const { contacts } = this.state;
